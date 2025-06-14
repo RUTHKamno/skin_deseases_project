@@ -258,7 +258,7 @@ def login_page():
         username = st.text_input("👤 Nom d'utilisateur")
         password = st.text_input("🔑 Mot de passe", type="password")
         
-        if st.button("Se connecter", use_container_width=True):
+        if st.button("Se connecter", use_column_width=True):
             if authenticate_user(username, password):
                 st.session_state['authenticated'] = True
                 st.session_state['username'] = username
@@ -541,10 +541,10 @@ def classification_page(model):
         with col1:
             image = Image.open(image_to_process)
             source_text = "Image téléchargée" if uploaded_file else "Photo prise"
-            st.image(image, caption=source_text, use_container_width=True)
+            st.image(image, caption=source_text, use_column_width=True)
             
             # Bouton d'analyse
-            if st.button("🔬 Analyser l'image", use_container_width=True, type="primary"):
+            if st.button("🔬 Analyser l'image", use_column_width=True, type="primary"):
                 with st.spinner("🤖 Analyse en cours..."):
                     # Simulation d'un délai de traitement
                     import time
@@ -693,7 +693,7 @@ def atlas_page():
 
                 
                 st.markdown("### 🔗 Actions")
-                if st.button("🔍 Analyser une image", use_container_width=True):
+                if st.button("🔍 Analyser une image", use_column_width=True):
                     st.session_state['navigate_to'] = "🔍 Classification"
                     st.rerun()
         
@@ -724,7 +724,7 @@ def atlas_page():
                     info = DISEASE_INFO[disease]
                     col_preview = st.container()
                     with col_preview:
-                        if st.button(f"📋 {disease} - {info['prevalence']}", use_container_width=True):
+                        if st.button(f"📋 {disease} - {info['prevalence']}", use_column_width=True):
                             st.session_state['selected_disease_detail'] = disease
                             st.rerun()
 
@@ -746,7 +746,7 @@ def statistics_page():
         color_continuous_scale='plasma'
     )
     fig1.update_xaxes(tickangle=45)
-    st.plotly_chart(fig1, use_container_width=True)
+    st.plotly_chart(fig1, use_column_width=True)
     
     # Métriques
     col1, col2, col3, col4 = st.columns(4)
@@ -772,7 +772,7 @@ def statistics_page():
         names=common_diseases,
         title="Répartition des 8 Maladies les Plus Communes"
     )
-    st.plotly_chart(fig2, use_container_width=True)
+    st.plotly_chart(fig2, use_column_width=True)
 
 def about_page():
     """Page à propos"""
