@@ -406,7 +406,7 @@ def main_app():
         st.text("")
 
         # Afficher le GIF
-        st.image("4.gif", use_column_width=True)
+        st.image("assets/4.gif", use_column_width=True)
     
     # Header principal
     st.markdown('<div class="main-header"><h1>🏥 DermAI</h1><p>Intelligence Artificielle pour le Diagnostic Dermatologique</p></div>', unsafe_allow_html=True)
@@ -442,18 +442,18 @@ def home_page():
         dict(
             title="Bienvenue sur notre plateforme!",
             text="Détection avancée des maladies de la peau par IA.",
-            img="2.jpg", # Exemple d'image
+            img="assets/2.jpg", # Exemple d'image
             # Vous pouvez ajouter un lien si vous le souhaitez: link="https://votre_lien.com"
         ),
         dict(
             title="Précision et Fiabilité",
             text="Un modèle entraîné sur 22 catégories de maladies.",
-            img="3.jpg", # Exemple d'image
+            img="assets/3.jpg", # Exemple d'image
         ),
         dict(
             title="Pour les Professionnels",
             text="Un atlas médical complet et des analyses statistiques.",
-            img="355d4716ca9b46301e5b38ac9e01c4a0.jpg", # Exemple d'image
+            img="assets/355d4716ca9b46301e5b38ac9e01c4a0.jpg", # Exemple d'image
         )
     ]
 
