@@ -269,7 +269,6 @@ def login_page():
         st.markdown("---")
         st.info("""
         **Comptes de démonstration:**
-        - **Médecin**: medecin / medecin123
         - **Admin**: admin / admin123  
         - **Utilisateur**: user / user123
         """)
@@ -376,7 +375,6 @@ def search_diseases_by_symptoms(query):
 
 def main_app():
     """Application principale"""
-    image_url='assets/4.gif'
     # Sidebar
     with st.sidebar:
         st.markdown("### 👋 Bienvenue")
