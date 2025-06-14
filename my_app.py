@@ -263,6 +263,8 @@ def login_page():
                 st.session_state['authenticated'] = True
                 st.session_state['username'] = username
                 st.success("✅ Connexion réussie!")
+                time.sleep(2)
+                st.experimental_rerun()
             else:
                 st.error("❌ Identifiants incorrects")
         
@@ -382,6 +384,8 @@ def main_app():
         
         if st.button("🚪 Déconnexion"):
             st.session_state['authenticated'] = False
+            time.sleep(2)
+            st.experimental_rerun()
         
         st.markdown("---")
         
