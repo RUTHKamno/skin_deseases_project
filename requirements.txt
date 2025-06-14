@@ -2,4 +2,4 @@ pandas==2.3.0
 Pillow==11.2.1
 plotly==6.1.2
 streamlit_carousel==1.1.2
-tensorflow
+tensorflow==2.6.0
