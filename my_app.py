@@ -258,7 +258,7 @@ def login_page():
         username = st.text_input("👤 Nom d'utilisateur")
         password = st.text_input("🔑 Mot de passe", type="password")
         
-        if st.button("Se connecter", use_column_width=True):
+        if st.button("Se connecter"):
             if authenticate_user(username, password):
                 st.session_state['authenticated'] = True
                 st.session_state['username'] = username
@@ -544,7 +544,7 @@ def classification_page(model):
             st.image(image, caption=source_text, use_column_width=True)
             
             # Bouton d'analyse
-            if st.button("🔬 Analyser l'image", use_column_width=True, type="primary"):
+            if st.button("🔬 Analyser l'image", type="primary"):
                 with st.spinner("🤖 Analyse en cours..."):
                     # Simulation d'un délai de traitement
                     import time
@@ -693,7 +693,7 @@ def atlas_page():
 
                 
                 st.markdown("### 🔗 Actions")
-                if st.button("🔍 Analyser une image", use_column_width=True):
+                if st.button("🔍 Analyser une image"):
                     st.session_state['navigate_to'] = "🔍 Classification"
                     st.rerun()
         
@@ -724,7 +724,7 @@ def atlas_page():
                     info = DISEASE_INFO[disease]
                     col_preview = st.container()
                     with col_preview:
-                        if st.button(f"📋 {disease} - {info['prevalence']}", use_column_width=True):
+                        if st.button(f"📋 {disease} - {info['prevalence']}"):
                             st.session_state['selected_disease_detail'] = disease
                             st.rerun()
 
