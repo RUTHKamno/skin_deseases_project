@@ -290,55 +290,81 @@ def preprocess_image(image):
     return img_array
 
 def predict_disease(image, model):
-    """Prédiction de la maladie (simulation)"""
+    """Prédiction de la maladie (corrigée)"""
     if image is None:
         return
-    classes_prediction = {'Acne': 0,
-        'Actinic_Keratosis': 1,
-        'Benign_tumors': 2,
+    
+    # Dictionnaire des classes avec leurs indices
+    classes_prediction = {
+        'Acne': 0,
+        'Actinic_Keratosis': 1,  # Attention: dans DISEASE_INFO c'est 'Actinic Keratosis' avec un espace
+        'Benign_tumors': 2,       # Attention: dans DISEASE_INFO c'est 'Benign Tumors' avec un espace
         'Bullous': 3,
         'Candidiasis': 4,
-        'DrugEruption': 5,
+        'DrugEruption': 5,        # Attention: dans DISEASE_INFO c'est 'Drug Eruption' avec un espace
         'Eczema': 6,
-        'Infestations_Bites': 7,
+        'Infestations_Bites': 7, # Attention: dans DISEASE_INFO c'est 'Infestations/Bites' avec un slash
         'Lichen': 8,
         'Lupus': 9,
         'Moles': 10,
         'Psoriasis': 11,
         'Rosacea': 12,
-        'Seborrh_Keratoses': 13,
-        'SkinCancer': 14,
-        'Sun_Sunlight_Damage': 15,
+        'Seborrh_Keratoses': 13,  # Attention: dans DISEASE_INFO c'est 'Seborrheic Keratoses'
+        'SkinCancer': 14,         # Attention: dans DISEASE_INFO c'est 'Skin Cancer' avec un espace
+        'Sun_Sunlight_Damage': 15, # Attention: dans DISEASE_INFO c'est 'Sun/Sunlight Damage' avec un slash
         'Tinea': 16,
-        'Unknown_Normal': 17,
-        'Vascular_Tumors': 18,
+        'Unknown_Normal': 17,     # Attention: dans DISEASE_INFO c'est 'Unknown/Normal' avec un slash
+        'Vascular_Tumors': 18,    # Attention: dans DISEASE_INFO c'est 'Vascular Tumors' avec un espace
         'Vasculitis': 19,
         'Vitiligo': 20,
-        'Warts': 21}
+        'Warts': 21
+    }
+    
+    # Dictionnaire inverse pour récupérer le nom à partir de l'indice
+    index_to_class = {v: k for k, v in classes_prediction.items()}
+    
+    # Mapping vers les noms utilisés dans DISEASE_INFO
+    model_to_disease_info = {
+        'Actinic_Keratosis': 'Actinic Keratosis',
+        'Benign_tumors': 'Benign Tumors',
+        'DrugEruption': 'Drug Eruption',
+        'Infestations_Bites': 'Infestations/Bites',
+        'Seborrh_Keratoses': 'Seborrheic Keratoses',
+        'SkinCancer': 'Skin Cancer',
+        'Sun_Sunlight_Damage': 'Sun/Sunlight Damage',
+        'Unknown_Normal': 'Unknown/Normal',
+        'Vascular_Tumors': 'Vascular Tumors'
+    }
 
-    # prediction
+    # Prédiction du modèle
     predictions = model.predict(image)
-    predicted_class = np.argmax(predictions[0])
-    for key,value in classes_prediction.items():
-        if value == predicted_class:
-            st.title(f'Predicted class: {key}')
-
-
-    # Simulation de prédiction - remplacez par model.predict(preprocessed_image)
-    classes = list(DISEASE_INFO.keys())
-    # Simulation avec probabilités aléatoires
+    predicted_class_index = np.argmax(predictions[0])
+    
+    # Récupération du nom de la classe prédite
+    predicted_class_name = index_to_class.get(predicted_class_index, 'Unknown')
+    
+    # Mapping vers le nom utilisé dans DISEASE_INFO
+    disease_name = model_to_disease_info.get(predicted_class_name, predicted_class_name)
+    
+    # Affichage du résultat principal
+    st.success(f'🎯 **Classe prédite:** {disease_name}')
+    
+    # Préparation des résultats pour le top 5
     probabilities = predictions[0]
-    probabilities = probabilities / probabilities.sum()
     
     # Tri par probabilité décroissante
     sorted_indices = np.argsort(probabilities)[::-1]
     
     results = []
     for i in sorted_indices[:5]:  # Top 5 prédictions
+        model_class_name = index_to_class.get(i, 'Unknown')
+        # Conversion vers le nom DISEASE_INFO
+        final_disease_name = model_to_disease_info.get(model_class_name, model_class_name)
+        
         results.append({
-            'disease': key,
-            'probability': probabilities[i],
-            'confidence': probabilities[i] * 100
+            'disease': final_disease_name,
+            'probability': float(probabilities[i]),  # Conversion en float pour éviter les erreurs
+            'confidence': float(probabilities[i] * 100)
         })
     
     return results
@@ -575,18 +601,55 @@ def classification_page(model):
                 # Graphique des probabilités
                 diseases = [r['disease'] for r in results]
                 probabilities = [r['probability'] for r in results]
-                
-                # fig = px.bar(
-                #     x=probabilities, 
-                #     y=diseases,
-                #     orientation='h',
-                #     title="Top 5 des Prédictions",
-                #     labels={'x': 'Probabilité', 'y': 'Maladie'},
-                #     color=probabilities,
-                #     color_continuous_scale='viridis'
-                # )
-                # fig.update_layout(height=300)
-                # st.plotly_chart(fig, use_container_width=True)
+
+                # Création du graphique horizontal
+                fig = px.bar(
+                    x=probabilities, 
+                    y=diseases,
+                    orientation='h',
+                    title="Top 5 des Prédictions",
+                    labels={'x': 'Probabilité', 'y': 'Maladie'},
+                    color=probabilities,
+                    color_continuous_scale='viridis',
+                    text=[f"{p:.1%}" for p in probabilities]  # Affichage des pourcentages
+                )
+
+                # Mise en forme du graphique
+                fig.update_layout(
+                    height=400,
+                    showlegend=False,
+                    xaxis_title="Probabilité de prédiction",
+                    yaxis_title="Maladies",
+                    title_x=0.5,
+                    font=dict(size=12)
+                )
+
+                # Affichage du texte sur les barres
+                fig.update_traces(textposition='inside')
+
+                # Affichage du graphique
+                st.plotly_chart(fig, use_container_width=True)
+
+                # Alternative : Graphique en secteurs pour le top 3
+                if len(results) >= 3:
+                    st.subheader("🥧 Répartition des 3 diagnostics les plus probables")
+                    
+                    top_3_diseases = [r['disease'] for r in results[:3]]
+                    top_3_probabilities = [r['probability'] for r in results[:3]]
+                    
+                    fig_pie = px.pie(
+                        values=top_3_probabilities, 
+                        names=top_3_diseases,
+                        title="Top 3 des diagnostics"
+                    )
+                    
+                    fig_pie.update_traces(
+                        textposition='inside', 
+                        textinfo='percent+label',
+                        hovertemplate='<b>%{label}</b><br>Probabilité: %{percent}<br><extra></extra>'
+                    )
+                    
+                    st.plotly_chart(fig_pie, use_container_width=True)
                 
                 # Informations détaillées
                 if top_result['disease'] in DISEASE_INFO:
